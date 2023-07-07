@@ -4,7 +4,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node build/index.js",
     "server": "nodemon server.js",
-    "initial-migrate": "node initial-migrate.js"
+    "initial-migrate": "node initial-migrate.js",
+    "location-vehicles-migration": "node vehicle-location.js"
   },
   "dependencies": {
     "@fastify/cors": "^8.3.0",

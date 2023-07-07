@@ -51,7 +51,6 @@ function insertVehicle(vehicle) {
     .then((response) => {
       vehicle.year += 2;
       vehicle.location = `${response.data[0].country}, ${response.data[0].state}, ${response.data[0].city}`;
-      console.log(...Object.values(vehicle));
       let stmt = db.prepare(
         "INSERT INTO vehicles (city_mpg,class,combination_mpg,cylinders,displacement,drive,fuel_type,highway_mpg,make,model,transmission,year,location) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
       );
