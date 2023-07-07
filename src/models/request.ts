@@ -8,3 +8,8 @@ export interface IReplyGetVehicles {
   200: { vehicles: Vehicle[]; page: number; limit: number; total: number };
   "4xx": { error: string };
 }
+
+export interface IReplyDeleteVehicle {
+  200: { message: string };
+  "4xx": { error: string };
+}

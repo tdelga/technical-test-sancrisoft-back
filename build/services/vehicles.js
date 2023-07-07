@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTotal = exports.updateVehicle = exports.getVehicle = exports.getVehicles = void 0;
+exports.deleteVehicle = exports.createVehicle = exports.getTotal = exports.updateVehicle = exports.getVehicle = exports.getVehicles = void 0;
 const database_js_1 = __importDefault(require("./database.js"));
 const getVehicles = async (pagOptions) => {
     const getVehiclesPromise = new Promise((resolve, reject) => {
@@ -53,3 +53,26 @@ const getTotal = async () => {
     return total;
 };
 exports.getTotal = getTotal;
+const createVehicle = async (vehicle) => {
+    const createVehiclePromise = new Promise((resolve, reject) => {
+        database_js_1.default.run(`INSERT INTO vehicles (city_mpg, class, combination_mpg, cylinders, displacement, drive, fuel_type, highway_mpg, make, model, transmission, year, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id;`, [...Object.values(vehicle)], (err, row) => {
+            if (err)
+                reject(err);
+            resolve(row.id);
+        });
+    });
+    const id = await createVehiclePromise;
+    return await (0, exports.getVehicle)(id);
+};
+exports.createVehicle = createVehicle;
+const deleteVehicle = async (id) => {
+    const deleteVehiclePromise = new Promise((resolve, reject) => {
+        database_js_1.default.run(`DELETE FROM vehicles WHERE id = ?;`, [id], (err) => {
+            if (err)
+                reject(err);
+            resolve("Vehicle deleted");
+        });
+    });
+    return await deleteVehiclePromise;
+};
+exports.deleteVehicle = deleteVehicle;

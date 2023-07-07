@@ -12,6 +12,7 @@ export type Vehicle = {
   model: string;
   transmission: string;
   year: number;
+  location: string;
 };
 
 export interface IReplyGPutVehicles {

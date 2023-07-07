@@ -48,5 +48,43 @@ const vehiclesRoutes = async (fastify, options) => {
             reply.code(400).send({ error: result });
         }
     });
+    fastify.post("/vehicles", async (req, reply) => {
+        try {
+            const { body } = req;
+            if (!body.make ||
+                !body.model ||
+                isNaN(body.year) ||
+                typeof body.year !== "number") {
+                throw new Error("Invalid body");
+            }
+            const vehicle = await (0, vehicles_1.createVehicle)(body);
+            reply.code(200).send({ vehicle });
+        }
+        catch (e) {
+            let result = "";
+            if (e instanceof Error) {
+                if (e.message.includes("SQLITE_ERROR"))
+                    result = "Error in database";
+                result = e.message;
+            }
+            reply.code(400).send({ error: result });
+        }
+    });
+    fastify.delete("/vehicles/:id", async (req, reply) => {
+        try {
+            const { id } = req.params;
+            const message = await (0, vehicles_1.deleteVehicle)(id);
+            reply.code(200).send({ message: message });
+        }
+        catch (e) {
+            let result = "";
+            if (e instanceof Error) {
+                if (e.message.includes("SQLITE_ERROR"))
+                    result = "Error in database";
+                result = e.message;
+            }
+            reply.code(400).send({ error: result });
+        }
+    });
 };
 exports.default = vehiclesRoutes;

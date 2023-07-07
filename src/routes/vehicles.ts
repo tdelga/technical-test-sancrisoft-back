@@ -3,8 +3,18 @@ import {
   FastifyPluginAsync,
   FastifyPluginOptions,
 } from "fastify";
-import { getVehicles, updateVehicle, getTotal } from "../services/vehicles";
-import { IQuerystringGetVehicles, IReplyGetVehicles } from "../models/request";
+import {
+  getVehicles,
+  updateVehicle,
+  getTotal,
+  deleteVehicle,
+  createVehicle,
+} from "../services/vehicles";
+import {
+  IQuerystringGetVehicles,
+  IReplyGetVehicles,
+  IReplyDeleteVehicle,
+} from "../models/request";
 import { IReplyGPutVehicles, Vehicle } from "../models/vehicles";
 import VehiclePut from "../models/vehiclePut";
 
@@ -53,6 +63,50 @@ const vehiclesRoutes: FastifyPluginAsync = async (
         }
         const vehicle = await updateVehicle(id, body);
         reply.code(200).send({ vehicle });
+      } catch (e) {
+        let result = "";
+        if (e instanceof Error) {
+          if (e.message.includes("SQLITE_ERROR")) result = "Error in database";
+          result = e.message;
+        }
+        reply.code(400).send({ error: result });
+      }
+    }
+  );
+
+  fastify.post<{ Body: Vehicle; Reply: IReplyGPutVehicles }>(
+    "/vehicles",
+    async (req, reply) => {
+      try {
+        const { body } = req as { body: Vehicle };
+        if (
+          !body.make ||
+          !body.model ||
+          isNaN(body.year) ||
+          typeof body.year !== "number"
+        ) {
+          throw new Error("Invalid body");
+        }
+        const vehicle = await createVehicle(body);
+        reply.code(200).send({ vehicle });
+      } catch (e) {
+        let result = "";
+        if (e instanceof Error) {
+          if (e.message.includes("SQLITE_ERROR")) result = "Error in database";
+          result = e.message;
+        }
+        reply.code(400).send({ error: result });
+      }
+    }
+  );
+
+  fastify.delete<{ Reply: IReplyDeleteVehicle }>(
+    "/vehicles/:id",
+    async (req, reply) => {
+      try {
+        const { id } = req.params as { id: string };
+        const message = await deleteVehicle(id);
+        reply.code(200).send({ message: message });
       } catch (e) {
         let result = "";
         if (e instanceof Error) {
