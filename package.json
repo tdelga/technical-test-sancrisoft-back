@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "start-ts": "ts-node src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node build/index.js",
+    "server": "nodemon server.js"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.3.0",
+    "axios": "^1.4.0",
+    "fastify": "^4.19.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.3",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
